@@ -46,7 +46,11 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <a href="{{ route('posts.destroy', $post['id']) }}"><button type="button" class="btn btn-danger">Delete</button></a>
+                    <form action="{{ route('posts.destroy', $post['id']) }}" method="post">
+                        @method('DELETE')
+                        @csrf
+                        <input type="submit" class="btn btn-danger" value="Delete">
+                    </form>
                 </div>
             </div>
         </div>
