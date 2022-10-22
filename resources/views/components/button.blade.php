@@ -1,0 +1,1 @@
+<a  href="{{$href}}"><button {{$attr}} class="btn btn-{{$color}}">{{$content}}</button></a>
