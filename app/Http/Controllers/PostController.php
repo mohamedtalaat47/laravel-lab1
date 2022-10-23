@@ -1,6 +1,8 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Models\Post;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class PostController extends Controller
@@ -12,10 +14,7 @@ class PostController extends Controller
      */
     public function index()
     {
-        $allPosts = [
-            ['id' => 1 , 'title' => 'laravel is cool', 'posted_by' => 'Ahmed', 'creation_date' => '2022-10-22', 'desc' => 'Lorem ipsum, dolor sit amet consectetur adipisicing elit. Corrupti voluptas nisi quod magni facilis consequuntur recusandae non reiciendis? Voluptatem est facere tempora, similique quasi accusamus nemo velit culpa laborum porro.'],
-            ['id' => 2 , 'title' => 'PHP deep dive', 'posted_by' => 'Mohamed', 'creation_date' => '2022-10-15', 'desc' => 'Lorem ipsum, dolor sit amet consectetur adipisicing elit. Corrupti voluptas nisi quod magni facilis consequuntur recusandae non reiciendis? Voluptatem est facere tempora, similique quasi accusamus nemo velit culpa laborum porro.'],
-        ];
+        $allPosts = Post::paginate(10);
         return view('posts.index',['posts' => $allPosts]);
     }
 
@@ -26,7 +25,11 @@ class PostController extends Controller
      */
     public function create()
     {
-        return view('posts.create');
+        $allUsers = User::all();
+
+        return view('posts.create',[
+            'allUsers' => $allUsers
+        ]);
     }
 
     /**
@@ -37,6 +40,15 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
+        request()->all();
+
+        // dd(request()->posted_by);
+        Post::create([
+            'title' => request()->title,
+            'desc' => request()->desc,
+            'user_id' => request()->posted_by,
+        ]);
+
         return redirect('/posts/');
     }
 
@@ -48,12 +60,8 @@ class PostController extends Controller
      */
     public function show($id)
     {
-        $allPosts = [
-            ['id' => 1 , 'title' => 'laravel is cool', 'posted_by' => 'Ahmed', 'creation_date' => '2022-10-22', 'desc' => 'Lorem ipsum, dolor sit amet consectetur adipisicing elit. Corrupti voluptas nisi quod magni facilis consequuntur recusandae non reiciendis? Voluptatem est facere tempora, similique quasi accusamus nemo velit culpa laborum porro.'],
-            ['id' => 2 , 'title' => 'PHP deep dive', 'posted_by' => 'Mohamed', 'creation_date' => '2022-10-15', 'desc' => 'Lorem ipsum, dolor sit amet consectetur adipisicing elit. Corrupti voluptas nisi quod magni facilis consequuntur recusandae non reiciendis? Voluptatem est facere tempora, similique quasi accusamus nemo velit culpa laborum porro.'],
-        ];
-
-        $requiredPost = $allPosts[$id - 1];
+        $requiredPost = Post::with('comments')->find($id);
+        // dd($requiredPost);
         return view('posts.show',['post' => $requiredPost]);
     }
 
@@ -65,13 +73,9 @@ class PostController extends Controller
      */
     public function edit($id)
     {
-        $allPosts = [
-            ['id' => 1 , 'title' => 'laravel is cool', 'posted_by' => 'Ahmed', 'creation_date' => '2022-10-22', 'desc' => 'Lorem ipsum, dolor sit amet consectetur adipisicing elit. Corrupti voluptas nisi quod magni facilis consequuntur recusandae non reiciendis? Voluptatem est facere tempora, similique quasi accusamus nemo velit culpa laborum porro.'],
-            ['id' => 2 , 'title' => 'PHP deep dive', 'posted_by' => 'Mohamed', 'creation_date' => '2022-10-15', 'desc' => 'Lorem ipsum, dolor sit amet consectetur adipisicing elit. Corrupti voluptas nisi quod magni facilis consequuntur recusandae non reiciendis? Voluptatem est facere tempora, similique quasi accusamus nemo velit culpa laborum porro.'],
-        ];
-
-        $requiredPost = $allPosts[$id - 1];
-        return view('posts.edit',['post' => $requiredPost]);
+        $allUsers = User::all();
+        $requiredPost = Post::find($id);
+        return view('posts.edit',['post' => $requiredPost,'users' => $allUsers]);
     }
 
     /**
@@ -83,6 +87,13 @@ class PostController extends Controller
      */
     public function update(Request $request, $id)
     {
+        request()->all();
+
+        $requiredPost = Post::find($id);
+        $requiredPost->title = request()->title;
+        $requiredPost->desc = request()->desc;
+        $requiredPost->user_id = request()->posted_by;
+        $requiredPost->save();
         return redirect('/posts/');
     }
 
@@ -94,6 +105,8 @@ class PostController extends Controller
      */
     public function destroy($id)
     {
+        $requiredPost = Post::find($id);
+        $requiredPost->delete();
         return redirect('/posts/');
     }
 }

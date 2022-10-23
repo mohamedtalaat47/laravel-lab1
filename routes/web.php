@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\PostController;
 use Illuminate\Support\Facades\Route;
 
@@ -19,3 +20,8 @@ Route::get('', function () {
 });
 
 Route::resource('posts', PostController::class);
+
+Route::post('comments/{id}', [CommentController::class,'store'])->name('comments.store');
+Route::put('comments/{id}/{postID}', [CommentController::class,'update'])->name('comments.update');
+Route::delete('comments/{id}/{postID}', [CommentController::class,'destroy'])->name('comments.destroy');
+
