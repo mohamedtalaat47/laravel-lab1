@@ -7,15 +7,17 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Cviebrock\EloquentSluggable\Sluggable;
 
 class Post extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, Sluggable;
 
     protected $fillable = [
         'title',
         'desc',
         'user_id',
+        'image'
     ];
 
     public function user()
@@ -33,5 +35,14 @@ class Post extends Model
         return Attribute::make(
             get: fn ($value) => Carbon::parse($value)->format('l jS \\of F Y'),
         );
+    }
+
+    public function sluggable(): array
+    {
+        return [
+            'slug' => [
+                'source' => 'title'
+            ]
+        ];
     }
 }

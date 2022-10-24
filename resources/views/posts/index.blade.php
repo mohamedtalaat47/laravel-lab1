@@ -1,4 +1,4 @@
-@extends('layout.app')
+@extends('layouts.app')
 @section('title', 'posts')
 @section('content')
     <div class="d-flex justify-content-between my-5">
@@ -16,19 +16,29 @@
             <thead>
                 <tr>
                     <th scope="col">#</th>
-                    <th scope="col">title</th>
+                    <th scope="col">image</th>
+                    <th scope="col">Title</th>
+                    <th scope="col">Slug</th>
                     <th scope="col">Descreption</th>
-                    <th scope="col">posted by</th>
-                    <th scope="col">creation date</th>
-                    <th scope="col">actions</th>
+                    <th scope="col">Posted by</th>
+                    <th scope="col">Creation date</th>
+                    <th scope="col">Actions</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach ($posts as $post)
                     <tr>
                         <th scope="row">{{ $post['id'] }}</th>
-                        <td class="w-25">{{ Str::limit($post['title'], 20) }}</td>
-                        <td class="w-25">{{ Str::limit($post['desc'], 35) }}</td>
+                        <td class="w-auto">
+                            @if ($post->image)
+                                <img src="{{ asset("storage/$post->image") }}" class="image" width='100px'>
+                            @else
+                                <p>no image</p>
+                            @endif
+                        </td>
+                        <td class="w-auto">{{ Str::limit($post['title'], 20) }}</td>
+                        <td class="w-auto">{{ Str::limit($post['slug'], 20) }}</td>
+                        <td class="w-auto">{{ Str::limit($post['desc'], 35) }}</td>
                         <td>{{ $post->user->name }}</td>
                         <td>{{ $post->created_at->toDateString() }}</td>
                         <td>

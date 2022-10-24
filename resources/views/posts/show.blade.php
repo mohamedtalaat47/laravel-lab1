@@ -1,4 +1,4 @@
-@extends('layout.app')
+@extends('layouts.app')
 @section('title', 'post')
 @section('content')
     <div class="d-flex justify-content-between my-5">
@@ -6,9 +6,12 @@
         <a href="{{ route('posts.index') }}"><button class="btn btn-outline-success">All posts</button></a>
     </div>
     <div class="card my-5">
-        <div class="card-body">
-            <h5 class="card-title">{{ $post['title'] }}</h5>
-            <p class="card-text">{{ $post['desc'] }}</p>
+        <div class="card-body d-flex justify-content-between">
+            <div>
+                <h5 class="card-title">{{ $post['title'] }}</h5>
+                <p class="card-text">{{ $post['desc'] }}</p>
+            </div>
+            <img src="{{ asset("storage/$post->image") }}" class="image-fluid" width="150px">
         </div>
     </div>
     <div class="card my-5">
@@ -73,15 +76,15 @@
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            <form action="{{ route('comments.update',[$comment->id, $post->id]) }}" method="post">
+                            <form action="{{ route('comments.update', [$comment->id, $post->id]) }}" method="post">
                                 @csrf
                                 @method('put')
                                 <input type="text" placeholder="enter new comment here" name="body">
-                            
+
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                <input type="submit" value="Update" class="btn btn-primary">
+                            <input type="submit" value="Update" class="btn btn-primary">
                             </form>
                         </div>
                     </div>

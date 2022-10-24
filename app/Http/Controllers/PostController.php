@@ -2,9 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\PostRequest;
+use App\Jobs\PruneOldPostsJob;
 use App\Models\Post;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Queue;
 
 class PostController extends Controller
 {
@@ -15,7 +19,7 @@ class PostController extends Controller
      */
     public function index()
     {
-        $allPosts = Post::paginate(10);
+        $allPosts = Post::with("user")->paginate(10);
         return view('posts.index', ['posts' => $allPosts]);
     }
 
@@ -39,16 +43,17 @@ class PostController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(PostRequest $request)
     {
-        request()->all();
+        $post = new Post();
 
-        // dd(request()->posted_by);
-        Post::create([
-            'title' => request()->title,
-            'desc' => request()->desc,
-            'user_id' => request()->posted_by,
-        ]);
+        if ($request->file('image')) {
+            $post->image = $request->file('image')->store('public/images');
+        }
+        $post->title = request()->title;
+        $post->desc = request()->desc;
+        $post->user_id = request()->posted_by;
+        $post->save();
 
         return redirect('/posts/');
     }
@@ -91,11 +96,14 @@ class PostController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(PostRequest $request, $id)
     {
         request()->all();
 
         $requiredPost = Post::find($id);
+        if ($request->file('image')) {
+            $requiredPost->image = $request->file('image')->store('public/images');
+        }
         $requiredPost->title = request()->title;
         $requiredPost->desc = request()->desc;
         $requiredPost->user_id = request()->posted_by;
@@ -121,4 +129,9 @@ class PostController extends Controller
         Post::onlyTrashed()->restore();
         return redirect('/posts/');
     }
+
+    // public function deleteOldPosts()
+    // {
+    //     return Queue::push(new PruneOldPostsJob());
+    // }
 }
