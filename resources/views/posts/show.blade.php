@@ -14,7 +14,7 @@
     <div class="card my-5">
         <div class="card-body">
             <h5 class="card-title">Posted by</h5>
-            <p class="card-text">{{ $post->user->name }} at {{ $post->created_at->toDateString() }}</p>
+            <p class="card-text">{{ $post->user->name }} at {{ $post->publishedAt }}</p>
         </div>
     </div>
 
@@ -91,6 +91,9 @@
             <h1 class="text-center">No comments yet</h1>
         @endif
     </div>
+
+    {{-- @livewire('comments', ['postID' => $post->id]) --}}
+
 
 
 @endsection

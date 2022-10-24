@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\PostController;
+use App\Http\Livewire\Comments;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -20,8 +21,14 @@ Route::get('', function () {
 });
 
 Route::resource('posts', PostController::class);
+Route::post('posts', [PostController::class,'restore'])->name('posts.restore');
+Route::get('posts/ajax/{id}', [PostController::class,'showJSON'])->name('posts.showJSON');
+
 
 Route::post('comments/{id}', [CommentController::class,'store'])->name('comments.store');
 Route::put('comments/{id}/{postID}', [CommentController::class,'update'])->name('comments.update');
 Route::delete('comments/{id}/{postID}', [CommentController::class,'destroy'])->name('comments.destroy');
+
+Route::get('/comment/add', Comments::class);
+
 

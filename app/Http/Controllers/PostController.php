@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Models\Post;
@@ -15,7 +16,7 @@ class PostController extends Controller
     public function index()
     {
         $allPosts = Post::paginate(10);
-        return view('posts.index',['posts' => $allPosts]);
+        return view('posts.index', ['posts' => $allPosts]);
     }
 
     /**
@@ -27,7 +28,7 @@ class PostController extends Controller
     {
         $allUsers = User::all();
 
-        return view('posts.create',[
+        return view('posts.create', [
             'allUsers' => $allUsers
         ]);
     }
@@ -61,8 +62,13 @@ class PostController extends Controller
     public function show($id)
     {
         $requiredPost = Post::with('comments')->find($id);
-        // dd($requiredPost);
-        return view('posts.show',['post' => $requiredPost]);
+        return view('posts.show', ['post' => $requiredPost]);
+    }
+
+    public function showJSON($id)
+    {
+        $requiredPost = Post::find($id);
+        return response()->json($requiredPost);
     }
 
     /**
@@ -75,7 +81,7 @@ class PostController extends Controller
     {
         $allUsers = User::all();
         $requiredPost = Post::find($id);
-        return view('posts.edit',['post' => $requiredPost,'users' => $allUsers]);
+        return view('posts.edit', ['post' => $requiredPost, 'users' => $allUsers]);
     }
 
     /**
@@ -107,6 +113,12 @@ class PostController extends Controller
     {
         $requiredPost = Post::find($id);
         $requiredPost->delete();
+        return redirect('/posts/');
+    }
+
+    public function restore()
+    {
+        Post::onlyTrashed()->restore();
         return redirect('/posts/');
     }
 }
