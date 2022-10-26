@@ -8,7 +8,9 @@ use App\Models\Post;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Queue;
+use Illuminate\Support\Facades\Storage;
 
 class PostController extends Controller
 {
@@ -48,7 +50,7 @@ class PostController extends Controller
         $post = new Post();
 
         if ($request->file('image')) {
-            $post->image = $request->file('image')->store('public/images');
+            $post->image = $request->file('image')->store('images');
         }
         $post->title = request()->title;
         $post->desc = request()->desc;
@@ -101,8 +103,22 @@ class PostController extends Controller
         request()->all();
 
         $requiredPost = Post::find($id);
+
+        // if (request()->hasFile('image') && request('image') != '') {
+        //     $imagePath = 'http://127.0.0.1:8000/storage/'.$requiredPost->image;
+        //     File::delete($requiredPost->image);
+        // }
+
+        if($request->hasFile('image')) {
+            $path = 'http://127.0.0.1:8000/storage/'.$requiredPost->image;
+            if($requiredPost->image){
+                Storage::delete($path);
+            // dd($path);
+            }
+        }
+
         if ($request->file('image')) {
-            $requiredPost->image = $request->file('image')->store('public/images');
+            $requiredPost->image = $request->file('image')->store('images');
         }
         $requiredPost->title = request()->title;
         $requiredPost->desc = request()->desc;

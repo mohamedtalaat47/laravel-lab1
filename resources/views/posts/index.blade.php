@@ -27,11 +27,37 @@
             </thead>
             <tbody>
                 @foreach ($posts as $post)
+                    <!-- Modal -->
+                    <div class="modal fade" id="exampleModal-{{$post['id']}}" tabindex="-1" aria-labelledby="exampleModalLabel"
+                        aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h1 class="modal-title fs-5" id="exampleModalLabel">Confirmation</h1>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    Are you sure you want to delete this post?
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    <form action="{{ route('posts.destroy', $post['id']) }}" method="post">
+                                        @method('DELETE')
+                                        @csrf
+                                        <input type="submit" class="btn btn-danger" value="Delete">
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <tr>
                         <th scope="row">{{ $post['id'] }}</th>
                         <td class="w-auto">
                             @if ($post->image)
-                                <img src="{{ asset("storage/$post->image") }}" class="image" width='100px'>
+                                <img src="{{ 'http://127.0.0.1:8000/storage/' . $post->image }}" class="image"
+                                    width='100px'>
                             @else
                                 <p>no image</p>
                             @endif
@@ -41,7 +67,7 @@
                         <td class="w-auto">{{ Str::limit($post['desc'], 35) }}</td>
                         <td>{{ $post->user->name }}</td>
                         <td>{{ $post->created_at->toDateString() }}</td>
-                        <td>
+                        <td class="w-25">
                             <a href="javascript:void(0)" id="show-post"
                                 data-url="{{ route('posts.showJSON', $post->id) }}"><button
                                     class="btn btn-dark">ajax</button></a>
@@ -50,36 +76,14 @@
                             <x-button color="primary" content="update" href="{{ route('posts.edit', $post['id']) }}">
                             </x-button>
                             <button class="btn btn-danger" data-bs-toggle="modal"
-                                data-bs-target="#exampleModal">Delete</button>
-                            {{-- <x-button color="danger" content="delete" attr='data-bs-toggle="modal" data-bs-target="#exampleModal"'></x-button> --}}
+                                data-bs-target="#exampleModal-{{$post['id']}}">Delete</button>
                         </td>
                     </tr>
                 @endforeach
             </tbody>
         </table>
 
-        <!-- Modal -->
-        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="exampleModalLabel">Confirmation</h1>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        Are you sure you want to delete this post?
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <form action="{{ route('posts.destroy', $post['id']) }}" method="post">
-                            @method('DELETE')
-                            @csrf
-                            <input type="submit" class="btn btn-danger" value="Delete">
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
+
         <div class="d-flex justify-content-center mt-5">
             {{ $posts->links('pagination::bootstrap-4') }}
         </div>
