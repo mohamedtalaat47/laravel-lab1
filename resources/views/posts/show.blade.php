@@ -11,7 +11,7 @@
                 <h5 class="card-title">{{ $post['title'] }}</h5>
                 <p class="card-text">{{ $post['desc'] }}</p>
             </div>
-            <img src="{{ asset("storage/$post->image") }}" class="image-fluid" width="150px">
+            <img src="{{ asset("storage/$post->image") }}" class="image-fluid" width="250px">
         </div>
     </div>
     <div class="card my-5">
@@ -32,7 +32,7 @@
 
             @foreach ($post->comments as $comment)
                 <div class="d-flex justify-content-center align-items-center py-2">
-                    <div class="d-flex justify-content-between second py-2 px-2"> <span
+                    <div class="d-flex justify-content-between align-items-center second py-2 px-2"> <span
                             class="text1">{{ $comment->body }}</span>
                         <div>
                             <button class="btn btn-primary" data-bs-toggle="modal"

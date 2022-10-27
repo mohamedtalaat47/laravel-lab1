@@ -14,22 +14,15 @@ use Illuminate\Support\Facades\Storage;
 
 class PostController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
+    
     public function index()
     {
         $allPosts = Post::with("user")->paginate(10);
         return view('posts.index', ['posts' => $allPosts]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
     public function create()
     {
         $allUsers = User::all();
@@ -39,12 +32,7 @@ class PostController extends Controller
         ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
+
     public function store(PostRequest $request)
     {
         $post = new Post();
@@ -57,15 +45,10 @@ class PostController extends Controller
         $post->user_id = request()->posted_by;
         $post->save();
 
-        return redirect('/posts/');
+        return to_route('posts.index');
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+
     public function show($id)
     {
         $requiredPost = Post::with('comments')->find($id);
@@ -78,12 +61,7 @@ class PostController extends Controller
         return response()->json($requiredPost);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+
     public function edit($id)
     {
         $allUsers = User::all();
@@ -91,59 +69,46 @@ class PostController extends Controller
         return view('posts.edit', ['post' => $requiredPost, 'users' => $allUsers]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+
     public function update(PostRequest $request, $id)
     {
-        request()->all();
 
         $requiredPost = Post::find($id);
 
-        // if (request()->hasFile('image') && request('image') != '') {
-        //     $imagePath = 'http://127.0.0.1:8000/storage/'.$requiredPost->image;
-        //     File::delete($requiredPost->image);
-        // }
-
-        if($request->hasFile('image')) {
-            $path = 'http://127.0.0.1:8000/storage/'.$requiredPost->image;
-            if($requiredPost->image){
+        if ($request->hasFile('image')) {
+            $path = $requiredPost->image;
+            if ($requiredPost->image) {
                 Storage::delete($path);
-            // dd($path);
             }
-        }
-
-        if ($request->file('image')) {
             $requiredPost->image = $request->file('image')->store('images');
         }
+
         $requiredPost->title = request()->title;
         $requiredPost->desc = request()->desc;
         $requiredPost->user_id = request()->posted_by;
         $requiredPost->save();
-        return redirect('/posts/');
+        return to_route('posts.index');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+
     public function destroy($id)
     {
         $requiredPost = Post::find($id);
+
+        if ($requiredPost->image) {
+            $path = $requiredPost->image;
+            Storage::delete($path);
+        }
+
         $requiredPost->delete();
-        return redirect('/posts/');
+        return to_route('posts.index');
     }
+
 
     public function restore()
     {
         Post::onlyTrashed()->restore();
-        return redirect('/posts/');
+        return to_route('posts.index');
     }
 
     // public function deleteOldPosts()
