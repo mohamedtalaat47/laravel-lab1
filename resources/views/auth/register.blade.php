@@ -1,5 +1,5 @@
 @extends('layouts.app')
-
+@section('title','signup')
 @section('content')
 <div class="container">
     <div class="row justify-content-center">
@@ -69,6 +69,18 @@
                             </div>
                         </div>
                     </form>
+                    <div class="mt-3 text-center">
+                        <a href="{{ route('github.login') }}">
+                        <button class="btn btn-dark">
+                            login with GitHub
+                        </button>
+                        </a>
+                        <a href="{{ route('google.login') }}">
+                        <button class="btn btn-success">
+                            login with Google
+                        </button>
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>

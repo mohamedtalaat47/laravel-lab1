@@ -26,7 +26,7 @@ class PostRequest extends FormRequest
         return [
             'title' => 'required|min:3|unique:posts,title,'.$this->post,
             'desc' => 'required|min:10',
-            'posted_by' => 'required|exists:users,id',
+            // 'posted_by' => 'required|exists:users,id',
             'image' => 'mimes:jpeg,jpg,png'
         ];
     }

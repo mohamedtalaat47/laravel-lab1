@@ -1,5 +1,5 @@
 @extends('layouts.app')
-
+@section('title','login')
 @section('content')
 <div class="container">
     <div class="row justify-content-center">
@@ -56,6 +56,7 @@
                                 <button type="submit" class="btn btn-primary">
                                     {{ __('Login') }}
                                 </button>
+                                
 
                                 @if (Route::has('password.request'))
                                     <a class="btn btn-link" href="{{ route('password.request') }}">
@@ -65,6 +66,18 @@
                             </div>
                         </div>
                     </form>
+                    <div class="mt-3 text-center">
+                        <a href="{{ route('github.login') }}">
+                        <button class="btn btn-dark">
+                            login with GitHub
+                        </button>
+                        </a>
+                        <a href="{{ route('google.login') }}">
+                        <button class="btn btn-success">
+                            login with Google
+                        </button>
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
